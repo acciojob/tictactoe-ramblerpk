@@ -1,23 +1,207 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer Tic Tac Toe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            min-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .player-setup {
+            display: block;
+        }
+
+        .game-board {
+            display: none;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .message {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: bold;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .cell {
+            width: 80px;
+            height: 80px;
+            background: #f8f9fa;
+            border: 3px solid #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .cell:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .cell.taken {
+            cursor: not-allowed;
+            background: #f1f3f4;
+        }
+
+        .cell.taken:hover {
+            transform: none;
+            border-color: #dee2e6;
+            background: #f1f3f4;
+        }
+
+        .x {
+            color: #e74c3c;
+        }
+
+        .o {
+            color: #3498db;
+        }
+
+        .winning-cell {
+            background: #2ecc71 !important;
+            color: white !important;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .reset-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .reset-btn:hover {
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+    </style>
+</head>
 <body>
-	<!-- the entire body must be written by student -->
-	<div class="container">
-		 <h1>Tic Tac Toe</h1>
-        Player 1 <input type="text" id="player-1" placeholder="Player 1 Name" style = "margin-bottom:10px " /><br>
-       Player 2 <input type="text" id="player-2" placeholder="Player 2 Name" style = "margin-bottom:10px " /><br>
-        <button id="submit">Start Game</button>
-        
-        <div class="board" style="display: none;">
+    <div class="container">
+        <div class="player-setup" id="player-setup">
             <h1>Tic Tac Toe</h1>
-            <div class="message"></div>
-            <div class="grid">
+            
+            <div class="input-group">
+                <label for="player-1">Player 1 Name:</label>
+                <input type="text" id="player-1" placeholder="Enter Player 1 name">
+            </div>
+            
+            <div class="input-group">
+                <label for="player-2">Player 2 Name:</label>
+                <input type="text" id="player-2" placeholder="Enter Player 2 name">
+            </div>
+            
+            <button id="submit">Start Game</button>
+        </div>
+
+        <div class="game-board" id="game-board">
+            <h1>Tic Tac Toe</h1>
+            <div class="message" id="message"></div>
+            
+            <div class="board">
                 <div class="cell" id="1"></div>
                 <div class="cell" id="2"></div>
                 <div class="cell" id="3"></div>
@@ -28,11 +212,140 @@
                 <div class="cell" id="8"></div>
                 <div class="cell" id="9"></div>
             </div>
+            
+            <button class="reset-btn" onclick="resetGame()">New Game</button>
         </div>
     </div>
-    <script type="text/javascript" src="./script.js">
-</script>
 
+    <script>
+        let player1Name = '';
+        let player2Name = '';
+        let currentPlayer = 1;
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        // Winning combinations
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+            [0, 4, 8], [2, 4, 6] // Diagonals
+        ];
+
+        // Start game button event listener
+        document.getElementById('submit').addEventListener('click', startGame);
+
+        // Add enter key support for input fields
+        document.getElementById('player-1').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('player-2').focus();
+            }
+        });
+
+        document.getElementById('player-2').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startGame();
+            }
+        });
+
+        function startGame() {
+            player1Name = document.getElementById('player-1').value.trim();
+            player2Name = document.getElementById('player-2').value.trim();
+            
+            if (player1Name === '' || player2Name === '') {
+                alert('Please enter names for both players!');
+                return;
+            }
+            
+            // Hide setup screen and show game board
+            document.getElementById('player-setup').style.display = 'none';
+            document.getElementById('game-board').style.display = 'block';
+            
+            // Initialize game
+            updateMessage();
+            setupBoard();
+        }
+
+        function setupBoard() {
+            // Add click event listeners to all cells
+            for (let i = 1; i <= 9; i++) {
+                document.getElementById(i.toString()).addEventListener('click', function() {
+                    makeMove(i - 1, this);
+                });
+            }
+        }
+
+        function updateMessage() {
+            const currentPlayerName = currentPlayer === 1 ? player1Name : player2Name;
+            document.getElementById('message').textContent = `${currentPlayerName}, you're up!`;
+        }
+
+        function makeMove(index, cell) {
+            if (gameBoard[index] !== '' || !gameActive) {
+                return;
+            }
+            
+            // Make the move
+            const symbol = currentPlayer === 1 ? 'X' : 'O';
+            gameBoard[index] = symbol;
+            cell.textContent = symbol;
+            cell.classList.add('taken');
+            cell.classList.add(symbol.toLowerCase());
+            
+            // Check for win
+            if (checkWin()) {
+                const winnerName = currentPlayer === 1 ? player1Name : player2Name;
+                document.getElementById('message').textContent = `${winnerName} congratulations you won!`;
+                gameActive = false;
+                highlightWinningCells();
+                return;
+            }
+            
+            // Check for tie
+            if (gameBoard.every(cell => cell !== '')) {
+                document.getElementById('message').textContent = "It's a tie!";
+                gameActive = false;
+                return;
+            }
+            
+            // Switch players
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateMessage();
+        }
+
+        function checkWin() {
+            return winningCombinations.some(combination => {
+                const [a, b, c] = combination;
+                return gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
+            });
+        }
+
+        function highlightWinningCells() {
+            winningCombinations.forEach(combination => {
+                const [a, b, c] = combination;
+                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+                    document.getElementById((a + 1).toString()).classList.add('winning-cell');
+                    document.getElementById((b + 1).toString()).classList.add('winning-cell');
+                    document.getElementById((c + 1).toString()).classList.add('winning-cell');
+                }
+            });
+        }
+
+        function resetGame() {
+            // Reset game state
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 1;
+            gameActive = true;
+            
+            // Clear all cells
+            for (let i = 1; i <= 9; i++) {
+                const cell = document.getElementById(i.toString());
+                cell.textContent = '';
+                cell.classList.remove('taken', 'x', 'o', 'winning-cell');
+            }
+            
+            // Reset message
+            updateMessage();
+        }
+    </script>
 </body>
-
 </html>
